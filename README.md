@@ -5,7 +5,7 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 ## AMQ Streams Exercises
 
 - [Exercise 1 - Exploring the AMQ Operator](./1-explore-amq-operator/)
-- [Exercise 2 - Create a resilient Kafka cluster using OCS RBD and CruiseControl](./2-first-playbook/)
+- [Exercise 2 - Create a resilient Kafka cluster using OCS RBD and CruiseControl](./2-ocs-rbd-rebalance/)
 - [Exercise 3 - Bench your Kafka cluster](./3-facts/)
 - [Exercise 4 - Mirror Kafka clusters between different Geo-Locations](./3-facts/)
 - [Exercise 5 - Export messages into OCS S3](./4-jinja-loops-handlers/)
