@@ -383,7 +383,7 @@ Verify by using `oc describe kr` that the proposal status is in `Rebalancing` st
 ```bash 
 $ oc exec -ti my-cluster-kafka-0 -c kafka -- bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe
 ```
-## Step 15 
+## Step 11
 
 Delete the exercise's resources: 
 
