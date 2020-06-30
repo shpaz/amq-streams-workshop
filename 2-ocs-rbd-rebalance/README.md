@@ -399,7 +399,7 @@ $ oc delete kafka my-cluster
 
 # Complete
 
-Congratulations! You have completed the first exercise :)
+Congratulations! You have completed the second exercise :)
 
 ---
 [Click Here to return to the AMQ streams Workshop](../README.md)
