@@ -394,9 +394,9 @@ $ oc delete kr my-rebalance
 $ oc delete ku my-user
 $ oc delete kt my-topic
 $ oc delete kafka my-cluster
-
-*Note*: PVs will be deleted when the Kafka cluster is destroyed 
 ```
+*Note*: PVs will be deleted when the Kafka cluster is destroyed 
+
 # Complete
 
 Congratulations! You have completed the first exercise :)
