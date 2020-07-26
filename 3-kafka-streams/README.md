@@ -1,5 +1,5 @@
 
-# Run real-time ETLs using Kafka Streams API on Openshift 
+# Run real-time ETLs using Kafka Streams API 
 
 Today more and more organizations are moving away from ETL, an ETL process is the form of Extract-> Transform -> Load where the data is being extracted from it's source location, being transformed into a clean valuable data and then loaded into a target database/warehouse. ETL jobs are batch-driven, mostly time consuming and messy mainly because there is no alignment between the different ETL pipeline components, which made the ETL architecture to be looking like a big spagetti plate. 
 
@@ -303,7 +303,7 @@ As you see we our `music-chart` application used the data that we have in our Ka
 # Takeaways 
 
 * ETL is not dead, it's just being re-newed
-* Kafka is a fast, resilient and reliable possibility to implement that kinf of ETL
+* Kafka is a fast, resilient and reliable possibility to implement that kind of ETL
 
 
 
