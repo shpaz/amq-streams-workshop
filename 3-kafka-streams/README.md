@@ -29,7 +29,7 @@ Getting to know better with Kafka Streams API:
 
 # Diagram
 
-![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+![](https://cdn.confluent.io/wp-content/uploads/blog_connect_streams_ref_arch.jpg)
 
 Make sure you connect to the cluster before starting this exercise! 
 
