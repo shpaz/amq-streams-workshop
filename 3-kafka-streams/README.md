@@ -30,9 +30,7 @@ To start using the Streams API, we should first install our Kafka cluster, to do
 $ oc new-project amq-streams
 ```
 
-Now let's use the `OperatorHub` section to install our operator, search for the `AMQ Streams` operator: 
-
-========= Image
+Now let's use the `OperatorHub` section to install our operator, search for the `AMQ Streams` operator
 
 
 After we have our operator installed, we can go on and create our Kafka cluster, to create it we'll use the `Kafka` CR: 
