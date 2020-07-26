@@ -7,6 +7,27 @@ In this exercise, we will use AMQ Streams operator to deploy Kafka on Openshift,
 
 in Order to Expose metrics using our custom CR. we will need to add the fields - `spec.kafka.metrics` , `spec.zookeeper.metrics` and `spec.kafkaExporter` :
 
+## Table of Contents
+
+- [Objective](#objective)
+- [Diagram](#diagram)
+- [Guide](#guide)
+- [Takeaways](#takeaways)
+
+# Objective
+
+Getting to know better with our AMQ monitoring possibilities: 
+
+- Deploy `Promehtues` and `Grafana` to monitor our cluster 
+- Understand how we can view metrics to understand better our cluster's state and performance   
+
+# Diagram
+
+![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+
+
+# Guide
+
 ## Step 1 
 
 ```bash
@@ -321,4 +342,9 @@ Access your `Grafana` dashboards and see if you get the data regarding your `Kaf
 
 Play with the number of your consumers and producers to see how the data changes in your dashboards.
 
-# Complete 
+# Complete
+
+Congratulations! You have completed the second exercise :)
+
+---
+[Click Here to return to the AMQ streams Workshop](../README.md)
