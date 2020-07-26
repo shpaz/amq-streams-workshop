@@ -21,4 +21,6 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
  - [Network Automation GitHub Repo](https://github.com/network-automation)
 
 ---
-![Red Hat AMQ Streams](../../images/networkautomation.png)
+## Red Hat AMQ Streams 
+
+![](https://www.google.com/url?sa=i&url=https%3A%2F%2Fdzone.com%2Farticles%2Fhow-to-run-kafka-on-openshift-the-enterprise-kuber&psig=AOvVaw13QM34SMg8Puz69rW91s_3&ust=1595839343917000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKCUu_3C6uoCFQAAAAAdAAAAABAD)
