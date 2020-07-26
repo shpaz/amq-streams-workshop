@@ -1,11 +1,13 @@
-## monitor your kafka cluster using prometheus & Grafana
+## Monitor your Kafka cluster using prometheus & Grafana
 
 We all know the importance of Metrics in Production, its ability to help the Operation teams catch onto a problem before it occurs, alert them, and as a result improve out production uptime.  
-Metrics in Red Hat AMQ can help us understand what is the state of Kafka cluster.
 
+Metrics in Red Hat AMQ can help us understand what is the state of Kafka cluster.
 In this exercise, we will use AMQ Streams operator to deploy Kafka on Openshift, and expose its metrics to Prometheus and Grafana.
 
 in Order to Expose metrics using our custom CR. we will need to add the fields - `spec.kafka.metrics` , `spec.zookeeper.metrics` and `spec.kafkaExporter` :
+
+## Step 1 
 
 ```bash
 $ oc create -f - <<EOF  
@@ -92,12 +94,15 @@ spec:
 EOF
 ```
 
-please note, you can also export the basic metrics for zookeeper and kafka using `metrics: {}` , but we’ve added some more metrics presented in [strimzi github project](https://github.com/strimzi/strimzi-kafka-operator/blob/master/examples/metrics/kafka-metrics.yaml)
+Please note, you can also export the basic metrics for zookeeper and kafka using `metrics: {}` , but we’ve added some more metrics presented in [strimzi github project](https://github.com/strimzi/strimzi-kafka-operator/blob/master/examples/metrics/kafka-metrics.yaml)
 
-lets take a look on our runing pods in the project:
+## Step 2
+
+Let's take a look on our runing pods in the project:
 
 ```bash
 $ oc get pods  
+
 amq-streams-cluster-operator-v1.5.0-986f4d669-s286z   1/1     Running   0          18m  
 my-cluster-entity-operator-5fc6c4bf49-hw5mm           3/3     Running   0          78s  
 my-cluster-kafka-0                                    2/2     Running   0          2m2s  
@@ -107,29 +112,42 @@ my-cluster-kafka-exporter-75c4c67757-v4zb2            1/1     Running   0       
 my-cluster-zookeeper-0                                1/1     Running   0          2m29s  
 my-cluster-zookeeper-1                                1/1     Running   0          2m29s  
 my-cluster-zookeeper-2                                1/1     Running   0          2m29s
-
 ```
--   we have our `amq-streams-cluster-oprator` which is the amq-streams operator
--   we have 3 kafka pod and 3 zookeeper pods as stated in `spec.kafka.replicas` and `spec.zookeeper.replicas` accordingly
--   we also have an entity operator, which comprises of the topic operator and the User operator,
--   lastly, we have our kafka exporter which exports our cluster metrics as stated in `spec.kafkaExporter` , the operator creates a service to reach this pod.
+-   We have our `amq-streams-cluster-oprator` which is the amq-streams operator
+-   We have 3 Kafka pod and 3 Zookeeper pods as stated in `spec.kafka.replicas` and `spec.zookeeper.replicas` accordingly
+-   we also have an entity operator, which comprises of the topic operator and the User operator
+-   Lastly, we have our kafka exporter which exports our cluster metrics as stated in `spec.kafkaExporter` , the operator creates a service to reach this pod
 
-**open the prometheus.yaml file, and edit the namespace according to your project in line 50**
-you can also use sed on CHANGE_ME in order to achieve this.
-now, lets run prometheus in our cluster:
+## Step 3 
+
+**Open the prometheus.yaml file, and edit the namespace according to your project in line 50**
+
+you can also use sed on CHANGE_ME in order to achieve this (We need Prometheus to access the Kubernetes API, and to do so we should create the needed  Role).
+
+Now, lets run `Prometheus` in our cluster:
 ```bash
 $ oc apply -f prometheus.yaml
 ```
 
-lets make sure that we can see metrics in our prometheus ui at its route.
+## Step 4 
 
+Make sure the needed Prometheus resources were created, try to access your Prometheus route.
 
-then, lets create our grafana and grafana dashboards:
+## Step 5 
+
+Create you `Grafana` deployment:
+
 ```bash
 oc apply -f grafana.yaml
 ```
 
-now, we will create a consumer producer, user and a topic just like in previous exercises, so the metrics shown won't be bland:
+## Step 6 
+
+TRy and access you `Grafana` route, do you have any data? why? 
+
+## Step 7
+
+After we have our monitoring system up and running, we can now create some workload on our `Kafka` cluster, to see if we get the data to our `Grafana` dasboards:
 
 ```bash
 oc create -f - <<EOF
@@ -291,6 +309,16 @@ spec:
             value: "1000"
 EOF
 ```
+## Step 8 
 
-access you grafana dashboard and watch the metrics, 
-you can also play with the consumer/producer deployments in terms of replicas and env var to see how that affects the metrics.
+Verify that you consumer and producer are working as expected, by printing their logs. 
+
+## Step 9 
+
+Access your `Grafana` dashboards and see if you get the data regarding your `Kafka` cluster's state. 
+
+## Step 10 
+
+Play with the number of your consumers and producers to see how the data changes in your dashboards.
+
+# Complete 
