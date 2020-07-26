@@ -147,7 +147,7 @@ you can also use sed on CHANGE_ME in order to achieve this (We need Prometheus t
 
 Now, lets run `Prometheus` in our cluster:
 ```bash
-$ oc apply -f prometheus.yaml
+$ oc apply -f https://github.com/shonpaz123/amq-streams-workshop/raw/master/6-monitor-amq-system/prometheus.yaml
 ```
 
 ## Step 4 
