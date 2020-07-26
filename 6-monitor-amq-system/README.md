@@ -159,7 +159,7 @@ Make sure the needed Prometheus resources were created, try to access your Prome
 Create you `Grafana` deployment:
 
 ```bash
-oc apply -f grafana.yaml
+oc apply -f https://github.com/shonpaz123/amq-streams-workshop/raw/master/6-monitor-amq-system/grafana.yaml
 ```
 
 ## Step 6 
