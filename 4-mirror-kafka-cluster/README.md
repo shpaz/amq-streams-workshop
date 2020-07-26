@@ -25,7 +25,7 @@ Getting to know better with Kafka's Geo-replication features:
 
 # Diagram
    
-![Red Hat Ansible Automation Lab Diagram](![](https://cwiki.apache.org/confluence/download/attachments/27846330/mirror_maker.jpg?version=2&modificationDate=1336499633000&api=v2))
+![](https://cwiki.apache.org/confluence/download/attachments/27846330/mirror_maker.jpg?version=2&modificationDate=1336499633000&api=v2)
 
 # Guide
 
