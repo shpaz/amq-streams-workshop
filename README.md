@@ -11,8 +11,6 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 - [Exercise 5 - Export messages into OCS S3](./4-jinja-loops-handlers/)
 - [Exercise 6 - Monitor your AMQ ecosystem](./6-monitor-amq-system/)
 
-## AMQ Diagram 
-![Red Hat Ansible Automation](../../images/network_diagram.png)
 
 ## Additional information
  - [Network Automation with Ansible Homepage](https://www.ansible.com/network-automation)
@@ -23,4 +21,4 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 ---
 ## Red Hat AMQ Streams 
 
-![](https://www.google.com/url?sa=i&url=https%3A%2F%2Fdzone.com%2Farticles%2Fhow-to-run-kafka-on-openshift-the-enterprise-kuber&psig=AOvVaw13QM34SMg8Puz69rW91s_3&ust=1595839343917000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKCUu_3C6uoCFQAAAAAdAAAAABAD)
+![](https://developers.redhat.com/blog/wp-content/uploads/2018/10/Untitled-drawing-4.png)
