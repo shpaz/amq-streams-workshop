@@ -35,14 +35,19 @@ Make sure you connect to the cluster before starting this exercise!
 
 # Guide
 
+## Step 1
+
 To start using the Streams API, we should first install our Kafka cluster, to do so we'll use `AMQ Streams` operator provided by Openshift. Let's create a project in which our Kafka cluster will be deployed in: 
 
 ```
 $ oc new-project amq-streams
 ```
 
-Now let's use the `OperatorHub` section to install our operator, search for the `AMQ Streams` operator
+## Step 2
 
+Now let's use the `OperatorHub` section to install our operator, search for the `AMQ Streams` operator and install it in your `amq-streams` project.
+
+## Step 3 
 
 After we have our operator installed, we can go on and create our Kafka cluster, to create it we'll use the `Kafka` CR: 
 
@@ -91,6 +96,7 @@ spec:
 EOF
 ```
 
+## Step 4 
 
 Let's verify our Kafka cluster has been successfully created using the `oc get pods` command: 
 
@@ -107,6 +113,8 @@ my-cluster-zookeeper-0                                 1/1     Running   0      
 my-cluster-zookeeper-1                                 1/1     Running   0          69s
 my-cluster-zookeeper-2                                 1/1     Running   0          69s
 ```
+
+## Step 5 
 
 Great! we have our Kafka cluster ready to go :) 
 Now let's create the two topics that will be used in this demo, to do so we will use the `KafkaTopic` CR: 
@@ -141,6 +149,8 @@ spec:
 EOF
 ```
 
+## Step 6 
+
 Now let's verify our topics were successfuly created: 
 
 ```bash 
@@ -150,6 +160,8 @@ NAME           PARTITIONS   REPLICATION FACTOR
 played-songs   12           3
 songs          12           3
 ```
+
+## Step 7 
 
 Now let's deploy the `player-app` which will be our producer. The `player-app` will write the list of songs to the the `songs` topic, and the random played songs to the `played-songs` topic: 
 
@@ -177,6 +189,7 @@ spec:
 EOF
 ```
 
+## Step 8
 Let's take a look at the `player-app` pod logs to see if the played songs has been written to the topic: 
 
 ```bash 
@@ -195,6 +208,7 @@ $ oc logs -f player-app-7d77899478-npt8r
 2020-07-25 19:53:37,037 INFO  [org.acm.PlaySongsGenerator] (RxComputationThreadPool-1) song 5: Sometimes played.
 ```
 
+## Step 8 
 As you see there are some songs that are being played a few times, This is where we leverage the Kafka streams API that will count the number of times each song was played.
 Let's use the `kafka-console-consumer.sh` script to list all the messages we have in those two topics to prove that we have that data in Kafka: 
 
@@ -210,6 +224,8 @@ $ oc exec -it my-cluster-kafka-0 bin/kafka-console-consumer.sh -- --bootstrap-se
 {"author":"Sweet","id":7,"name":"Fox On The Run"}
 {"author":"Ennio Morricone","id":1,"name":"The Good The Bad And The Ugly"}
 ```
+
+## Step 9
 
 Now let's take a look at the `played-songs` topic: 
 
@@ -231,6 +247,8 @@ $ oc exec -it my-cluster-kafka-0 bin/kafka-console-consumer.sh -- --bootstrap-se
 2020-07-25T19:55:22.038151Z;Kamesh
 2020-07-25T19:57:07.038171Z;Kamesh
 ```
+
+## Step 10
 
 Great! we have our data, now we can start transforming it into our desired strcture, Let's deploy the `music-chart` application: 
 
@@ -257,6 +275,8 @@ spec:
         image: shonpaz123/kafka-streams:music-chart
 EOF
 ```
+
+## Step 11 
 
 After we have our application deployed, let's take a look at the `music-chart` pod logs: 
 
