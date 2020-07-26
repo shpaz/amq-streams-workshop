@@ -14,15 +14,26 @@ Kafka Streams API will consume topics from our Kafka cluster and will transform 
 
 Music chart is a Java application that joins two topics from a given Kafka cluster, one topic contains a list of songs, and the other topic contains a random list of the songs that has being played. In our example, we have the `player-app` producer that notifies the Kafka topic each time a new song has been played. Our Music Chart app takes those two topics, and joins them to find out how many times a given songs have been played. This joined data can be sinked into target databases or can be consumed by subscribers for that given topic. 
 
+## Table of Contents
 
-Lets get it on! 
+- [Objective](#objective)
+- [Diagram](#diagram)
+- [Guide](#guide)
+- [Takeaways](#takeaways)
 
-## Prerequisites 
+# Objective
 
-* A running Openshift cluster (mine is 4.5.1) 
+Getting to know better with Kafka Streams API: 
+- Understand how we can develop our own Streams application using Kafka Streams 
+- Understand how Streams API can help use implementing a real-time ETL
 
+# Diagram
 
-## Installation 
+![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+
+Make sure you connect to the cluster before starting this exercise! 
+
+# Guide
 
 To start using the Streams API, we should first install our Kafka cluster, to do so we'll use `AMQ Streams` operator provided by Openshift. Let's create a project in which our Kafka cluster will be deployed in: 
 
@@ -269,9 +280,10 @@ $ oc logs -f music-chart-778b8f767c-fhz4w
 
 As you see we our `music-chart` application used the data that we have in our Kafka cluster and counted the number of times each song was played! 
 
-## Conclusion 
+# Takeaways 
 
-In this demo, I've showed you how you can create your own ETL using Kafka only, This method simlifies the way we treat the big data world today, mostly when having huge amounts of data moving back and forth in our organizations. That way, Kafka performs as a single-point-of-truth when having metrics, events, ETLs and more using Kafka as a fast, reliable and resilent solution. 
-Hope you have enjoyed this demo, see ya next time :) 
+* ETL is not dead, it's just being re-newed
+* Kafka is a fast, resilient and reliable possibility to implement that kinf of ETL
+
 
 
