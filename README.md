@@ -13,11 +13,8 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 
 
 ## Additional information
- - [Network Automation with Ansible Homepage](https://www.ansible.com/network-automation)
- - [List of Networking Ansible Modules](http://docs.ansible.com/ansible/latest/list_of_network_modules.html)
- - [Module Maintenance & Support](http://docs.ansible.com/ansible/latest/modules_support.html)
- - [Network Automation GitHub Repo](https://github.com/network-automation)
-
+ - [AMQ Streams Red Hat Documentation](https://access.redhat.com/documentation/en-us/red_hat_amq/7.7/html/amq_streams_on_openshift_overview/index)
+ - [Strimzi Project](https://strimzi.io/)
 ---
 ## Red Hat AMQ Streams 
 
