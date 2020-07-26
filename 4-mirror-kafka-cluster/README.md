@@ -8,9 +8,6 @@ In this article, we will use the AMQ Streams operator to deploy Kafka on a strec
 
 In the end, we'll trace the response time of the whole pipline using Jaeger, where we sould see the response time for each component in the replication pipeline.
 
-
-   ![](https://cwiki.apache.org/confluence/download/attachments/27846330/mirror_maker.jpg?version=2&modificationDate=1336499633000&api=v2)
-
 ## Table of Contents
 
 - [Objective](#objective)
@@ -27,8 +24,8 @@ Getting to know better with Kafka's Geo-replication features:
 - Trace response times for the components on you Mirror Making pipeline 
 
 # Diagram
-
-![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+   
+![Red Hat Ansible Automation Lab Diagram](.![](https://cwiki.apache.org/confluence/download/attachments/27846330/mirror_maker.jpg?version=2&modificationDate=1336499633000&api=v2))
 
 # Guide
 
