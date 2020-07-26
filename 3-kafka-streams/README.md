@@ -305,5 +305,13 @@ As you see we our `music-chart` application used the data that we have in our Ka
 * ETL is not dead, it's just being re-newed
 * Kafka is a fast, resilient and reliable possibility to implement that kind of ETL
 
+# Complete
+
+Congratulations! You have completed the third exercise :)
+
+---
+[Click Here to return to the AMQ streams Workshop](../README.md)
+
+
 
 
