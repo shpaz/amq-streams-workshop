@@ -9,7 +9,7 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 - [Exercise 3 - Create your own ETL using Kafka Streams](./3-kafka-streams/)
 - [Exercise 4 - Mirror Kafka clusters between different Geo-Locations](./4-mirror-kafka-cluster/)
 - [Exercise 5 - Export messages into OCS S3](./4-jinja-loops-handlers/)
-- [Exercise 6 - Monitor your AMQ ecosystem](./5-roles-lint/)
+- [Exercise 6 - Monitor your AMQ ecosystem](./6-monitor-amq-system/)
 
 ## AMQ Diagram 
 ![Red Hat Ansible Automation](../../images/network_diagram.png)
