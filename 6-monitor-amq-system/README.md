@@ -23,8 +23,7 @@ Getting to know better with our AMQ monitoring possibilities:
 
 # Diagram
 
-![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
-
+![](https://478h5m1yrfsa3bbe262u7muv-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kubernetes_prom_diagram2.png)
 
 # Guide
 
