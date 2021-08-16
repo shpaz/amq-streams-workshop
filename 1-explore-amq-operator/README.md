@@ -1,4 +1,4 @@
-# Exercise 1 - Exploring the AMQ Operator
+# Exercise 1 - Exploring Basic Capabillities of AMQ Streams
 
 ## Table of Contents
 
@@ -10,13 +10,13 @@
 # Objective
 
 Explore and understand the AMQ operator, In this exercise we will learn to: 
-- Deploy the AMQ Operator using the OperatorHub
-- Create our own Kafka cluster using `Kafka` CR 
+- Understand how we can ease Day1 and Day2 operations using the AMQ Streams operator
+- Create our own Kafka cluster using the `Kafka` CR 
 - Getting to know the different installation components 
 
 # Diagram
 
-![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+![](https://access.redhat.com/webassets/avalon/d/Red_Hat_AMQ-7.6-AMQ_Streams_on_OpenShift_Overview-en-US/images/541e70584b3fc4c183e80851b0f4304c/topic-operator.png)
 
 Make sure you connect to the cluster before starting this exercise! 
 
@@ -24,82 +24,44 @@ Make sure you connect to the cluster before starting this exercise!
 
 ## Step 1
 
-Create a projet named `amq-streams` for the purpose of this exercise: 
+Login to the `Openshift Console` and create a project using the `Project` tab on te left. Hit the `Create a new project` button and create your own project:
 
-```bash 
-$ oc new-project amq-streams
-```
+![](./pictures/create-project.png)
 
 ## Step 2
 
-Navigate to the Openshift console, and get into the `OperatorHub` tab, where you will find various operators to install, and install the 
-AMQ operator in the created `amq-streams` project.  
+ Click the `Add+` button in order to consume a resource from Openshift's marketplace. Pick the `Operator Backed` button in order to consume As-A-Service Kafka cluster. 
+
+ Pick the `Kafka` resource and hit `Create` to start the deployment:  
+
+![](./pictures/create-kafka.png)
 
 ## Step 3 
 
-Verify that your Operator was installed properly, by using the `get pods` command: 
+Leave the default name for your Kafka cluster and make sure you understand the wizard presented to you: 
 
-```bash 
-$ oc get pods
- 
-NAME                                                   READY   STATUS    RESTARTS   AGE
-amq-streams-cluster-operator-v1.5.0-56d47bfcd5-fg7fg   1/1     Running   0          71s
-```
+- What does number of replicas mean?
+- What is an ephemeral storage and how it connects to emptyDir?
+- What are requests and limits? how do we control resources with them?
 
-After we have our operator running, we can now create our Kafka cluster using the `Kafka` CR. For now, we'll deploy an ephemeral Kafka cluster where both Zookeeper and Kafka use 
-emptyDir as their data source. 
+Hit the `Create` button in order to complete the installation: 
+
+![](./pictures/create-kafka-instance.png)
+
 
 ## Step 4 
 
-Create a Kafka cluster using the `Kafka` CR: 
+Make sure your Kafka cluster was successfully installed and that you can see all of its compnents: 
 
-```bash 
-$ oc create -f - <<EOF
-apiVersion: kafka.strimzi.io/v1beta1
-kind: Kafka
-metadata:
-  name: my-cluster
-spec:
-  kafka:
-    version: 2.4.0
-    replicas: 3
-    listeners:
-      plain: {}
-      tls: {}
-    config:
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 2
-      log.message.format.version: "2.4"
-    storage:
-      type: ephemeral
-  zookeeper:
-    replicas: 3
-    storage:
-      type: ephemeral
-  entityOperator:
-    topicOperator: {}
-    userOperator: {}
-EOF
-```
+![](./pictures/my-kafka-cluster.png)
+
 
 ## Step 5 
 
-Veirfy that your Kafka cluster installation had been successful by using the `get pods` command: 
+Veirfy that your Kafka cluster installation had been successful by using the `Project -> Pods` in the inventory: 
 
-```bash 
-$ oc get pods                                                    
- 
-NAME                                                   READY   STATUS    RESTARTS   AGE
-amq-streams-cluster-operator-v1.5.0-56d47bfcd5-fg7fg   1/1     Running   0          9m20s
-my-cluster-entity-operator-847ff5cb57-rgdxw            3/3     Running   0          60s
-my-cluster-kafka-0                                     2/2     Running   0          2m10s
-my-cluster-kafka-1                                     2/2     Running   0          84s
-my-cluster-kafka-2                                     2/2     Running   0          2m10s
-my-cluster-zookeeper-0                                 1/1     Running   0          3m9s
-my-cluster-zookeeper-1                                 1/1     Running   0          3m51s
-my-cluster-zookeeper-2                                 1/1     Running   0          3m51s
-```
+![](./pictures/get-pods.png)
+
 
 Here you can see that you have deployed threee things:
 
@@ -109,43 +71,34 @@ Here you can see that you have deployed threee things:
 
 ## Step 6 
 
-Ensure that the Kafka nodes are indeed using an emptyDir volumes for storing the Kafka logDirs: 
+Ensure that the Kafka nodes are indeed using an emptyDir volumes for storing the Kafka logDirs by using `Project -> PVCs` on the left tab: 
 
-```bash 
-$ oc get pods/my-cluster-kafka-0 --output jsonpath='{.spec.volumes[0]}'
- 
-map[emptyDir:map[] name:data]
-```
+![](./pictures/no-pvcs.png)
+
 
 ## Step 7 
 
-Having our Kafka cluster using emptyDirs means that on failure that Kafka cluster will have to replicate data on his own because the underlying volume is gone.
+Having our Kafka cluster using emptyDirs means that on failure that Kafka cluster will have to replicate data on his own because **the underlying volume is gone**.
 In this case we will count on Kafka's replication mechanism for replicating the data which can sometimes cause unwanted latency. 
 
 To do so, we'll create a producer a Topic, a Producer and a Consumer that will send messages to one another. Producer --> Topic --> Consumer. 
+
+![](https://miro.medium.com/max/700/1*TX19sKucFmSXSE-k6aMThg.png)
+
 We'll kill one of the Kafka nodes and see how it affects the offset being transfered between the producer and the consumer. 
 
 
 ## Step 8 
 
-Let's create a Kafka topic using the `Topic` CR with the name `my-topic`: 
+Let's create a Kafka topic using the `Add+ -> Operator Backed -> Kafka Topic -> Create` with the name `my-topic`: 
 
-```
-$ oc create -f - <<EOF 
-apiVersion: kafka.strimzi.io/v1beta1
-kind: KafkaTopic
-metadata:
-  name: my-topic
-  labels:
-    strimzi.io/cluster: my-cluster
-spec:
-  partitions: 12
-  replicas: 3
-  config:
-    retention.ms: 7200000
-    segment.bytes: 1073741824
-EOF
-```
+![](./pictures/create-topic.png)
+
+
+Make sure you leave the default values and hit the `Create` button. 
+
+### Pause To Think
+*Question - How does the Kafka Topic know which cluster to point to?*
 
 ## Step 9 
 
@@ -160,88 +113,27 @@ my-topic   12           3
 
 The Kafka topic was created with 12 parititions and replication factor of 3. 
 
-## A moment of thinking  
+### Pause to Think  
 
-* How will the paritions be divided across our Kafka nodes? How many parititions will every node get? 
+*How will the paritions be divided across our Kafka nodes? How many parititions will every node get?*
 
 
 ## Step 10 
 
-Let's create a Kafka user to interact with the created topic, move through the `KafkaUser` CR to verify that you understand how user management is handled in AMQ: 
+Let's create a Kafka user to interact with the created topic, move through the `KafkaUser` CR to verify that you understand how user management is handled in AMQ.
 
-```bash
-$ oc create -f - <<EOF 
+Copy this YAML, and paste it in `Add+ -> Operator Backed -> Kafka User` in order to create the `Kafka User` CR: 
  
-apiVersion: kafka.strimzi.io/v1beta1
-kind: KafkaUser
-metadata:
-  name: my-user
-  labels:
-    strimzi.io/cluster: my-cluster
-spec:
-  authentication:
-    type: tls
-  authorization:
-    type: simple
-    acls:
-      # Example consumer Acls for topic my-topic suing consumer group my-group
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Read
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Describe
-        host: "*"
-      - resource:
-          type: group
-          name: my-group
-          patternType: literal
-        operation: Read
-        host: "*"
-      # Example Producer Acls for topic my-topic
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Write
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Create
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Describe
-        host: "*"
-EOF
-```
 
-## Step 11 
+![](./pictures/create-user.png)
 
-Verify that the user was indeed created using the `get ku` command: 
+Before you hit the `Create` button, switch to the `YAML View` section to verify you understand all the ACLs that is being given to our created user.
 
-```bash 
-$ oc get ku  
-                                                                               
-NAME      AUTHENTICATION   AUTHORIZATION
-my-user   tls              simple
-```
-
-## Step 12
+## Step 11
 
 Now let's create a Kafka Producer that will write messages to our `my-topic` topic, and a consumer that will consume those messages: 
 
 ```bash 
-$ oc create -f - <<EOF 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -333,70 +225,45 @@ spec:
             value: "INFO"
           - name: MESSAGE_COUNT
             value: "1000"
-EOF
 ```
 
 ## Step 13 
 
-Verify that both consumer and producer works as expected by browsing their logs, for example: 
+Verify that both consumer and producer works as expected by browsing their logs with `Topology -> hello-producer/consumer -> Resources - View Logs`, for example: 
 
-```bash 
-$ oc logs $(oc get pod -l app=hello-world-producer -o=jsonpath='{.items[0].metadata.name}') -f
+### Producer Logs
+![](./pictures/producer-logs.png)
 
-2020-06-29 12:31:58 INFO  KafkaProducerExample:18 - Sending messages "Hello world - 1"
-2020-06-29 12:31:59 INFO  KafkaProducerExample:18 - Sending messages "Hello world - 2"
-2020-06-29 12:32:00 INFO  KafkaProducerExample:18 - Sending messages "Hello world - 3"
-2020-06-29 12:32:01 INFO  KafkaProducerExample:18 - Sending messages "Hello world - 4"
-```
+### Consumer Logs
 
-```bash 
-$ oc logs $(oc get pod -l app=hello-world-consumer -o=jsonpath='{.items[0].metadata.name}') -f
+![](./pictures/consumer-logs.png)
 
-2020-06-29 12:31:57 INFO  KafkaConsumerExample:27 - 	value: Hello world - 0
-2020-06-29 12:31:58 INFO  KafkaConsumerExample:24 - Received message:
-2020-06-29 12:31:58 INFO  KafkaConsumerExample:25 - 	partition: 10
-2020-06-29 12:31:58 INFO  KafkaConsumerExample:26 - 	offset: 0
-2020-06-29 12:31:58 INFO  KafkaConsumerExample:27 - 	value: Hello world - 1
-2020-06-29 12:31:59 INFO  KafkaConsumerExample:24 - Received message:
-2020-06-29 12:31:59 INFO  KafkaConsumerExample:25 - 	partition: 2
-2020-06-29 12:31:59 INFO  KafkaConsumerExample:26 - 	offset: 0
-2020-06-29 12:31:59 INFO  KafkaConsumerExample:27 - 	value: Hello world - 2
-2020-06-29 12:32:00 INFO  KafkaConsumerExample:24 - Received message:
-2020-06-29 12:32:00 INFO  KafkaConsumerExample:25 - 	partition: 8
-2020-06-29 12:32:00 INFO  KafkaConsumerExample:26 - 	offset: 0
-2020-06-29 12:32:00 INFO  KafkaConsumerExample:27 - 	value: Hello world - 3
-```
 
 ## Step 14 
 
-Now after that we have our producer and consumer running as expected, open another terminal and continue tailing the `Consumer` logs in the first terminal. Now we will delete one of the Kafka nodes
-to see if we will have downtime in doing so: 
+Now after that we have our producer and consumer running as expected, open another Let's try to delete one of our Kafka pods and see what happens.
 
-From the second terminal: 
+From the `Topology -> my-cluster-kafka -> Resources`, Click on one of the pods and hit `Actions -> Delete Pod`: 
 
-```bash 
-$ oc delete pod/my-cluster-kafka-1
-```
+![](./pictures/delete-pod.png)
 
-Go back to you first teminal and verify that you have lost connection the the Kafka node: 
 
-```bash 
-466363 [main] INFO org.apache.kafka.clients.FetchSessionHandler - [Consumer clientId=consumer-1, groupId=my-group] Error sending fetch request (sessionId=1145780833, epoch=920) to node 1: org.apache.kafka.common.errors.DisconnectException.
-```
+Go back to you cosumer logs and verify that you have lost connection the the Kafka node: 
+
+![](./pictures/disconnection.png)
+
 
 The failure happened because we have accessed a node that had no healthy replica of the data we've asked for. Replicating the data when using large scale can be very painful, In the next exercise we will see how we can use OCS RBD to save the persistency of our data so that each Kafka node that is being deleted will get the same PV.
 
 ## Step 15 
 
-Delete the exercise's resources: 
+Delete the exercise's resources using:
+*  `Topology -> hello-producer -> Delete Deployment`
+*  `Topology -> hello-consumer -> Delete Deployment`
+*  `Search -> Resources -> KafkaUser -> Delete`
+*  `Search -> Resources -> Kafka -> Delete`
 
-```bash 
-$ oc delete deployment hello-world-consumer
-$ oc delete deployment hello-world-producer 
-$ oc delete ku my-user
-$ oc delete kt my-topic
-$ oc delete kafka my-cluster
-```
+Make sure you have nothing in the `Topology View`.
 # Complete
 
 Congratulations! You have completed the first exercise :)
