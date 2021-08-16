@@ -5,7 +5,7 @@ This content is a multi-purpose toolkit for effectively demonstrating AMQ's capa
 ## AMQ Streams Exercises
 
 - [Exercise 1 - Exploring Basic Capabillities of AMQ Streams](./1-explore-amq-operator/)
-- [Exercise 2 - Create a resilient Kafka cluster using OCS RBD and CruiseControl](./2-amq-persistent-odf/)
+- [Exercise 2 - Create a resilient Kafka cluster using Openshift Data Foundation](./2-amq-persistent-odf/)
 - [Exercise 3 - Create your own ETL using Kafka Streams](./3-kafka-streams/)
 - [Exercise 4 - Mirror Kafka clusters between different Geo-Locations](./4-mirror-kafka-cluster/)
 - [Exercise 5 - Export messages into OCS S3](./4-jinja-loops-handlers/)
