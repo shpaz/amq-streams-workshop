@@ -85,9 +85,6 @@ Let's create a Kafka topic using the `Add+ -> Operator Backed -> Kafka Topic -> 
 
 Make sure you leave the default values and hit the `Create` button. 
 
-### Pause To Think
-*Question - How does the Kafka Topic know which cluster to point to?*
-
 ## Step 9 
 
 Validate that the created Kafka topic was created successfuly by using `get kt` command: 
@@ -100,11 +97,6 @@ my-topic   12           3
 ```
 
 The Kafka topic was created with 12 parititions and replication factor of 3. 
-
-### Pause to Think  
-
-*How will the paritions be divided across our Kafka nodes? How many parititions will every node get?*
-
 
 ## Step 10 
 
@@ -239,12 +231,8 @@ From the `Topology -> my-cluster-kafka -> Resources`, Click on one of the pods a
 ![](../1-explore-amq-operator/pictures/delete-pod.png)
 
 
-Go back to you cosumer logs and verify that you have lost connection the the Kafka node: 
+Go back to you cosumer logs and verify that you don't see a disconnection as the pod attached the previously used persistent volume. 
 
-![](../1-explore-amq-operator/pictures/disconnection.png)
-
-
-The failure happened because we have accessed a node that had no healthy replica of the data we've asked for. Replicating the data when using large scale can be very painful, In the next exercise we will see how we can use OCS RBD to save the persistency of our data so that each Kafka node that is being deleted will get the same PV.
 
 ## Step 15 
 
