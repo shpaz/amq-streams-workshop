@@ -29,8 +29,9 @@ Getting to know better with our AMQ monitoring possibilities:
 
 ## Step 1 
 
+Make sure you navigate to `Add+ --> YAML` and copy the following YAML into the code snipped presented in the browser:
+
 ```bash
-$ oc create -f - <<EOF  
 apiVersion: kafka.strimzi.io/v1alpha1  
 kind: Kafka  
 metadata:  
@@ -48,7 +49,9 @@ spec:
       transaction.state.log.replication.factor: 3  
       transaction.state.log.min.isr: 2  
     storage:  
-      type: ephemeral  
+      type: persistent-claim  
+      size: 5Gi  
+      deleteClaim: true  
     metrics:  
       lowercaseOutputName: true  
       rules:  
@@ -80,8 +83,8 @@ spec:
       timeoutSeconds: 5  
     storage:  
       type: persistent-claim  
-      size: 100Gi  
-      deleteClaim: false  
+      size: 5Gi  
+      deleteClaim: true  
     metrics:  
       lowercaseOutputName: true  
       rules:  
@@ -110,132 +113,83 @@ spec:
     userOperator: {}  
   kafkaExporter:  
     topicRegex: ".*"  
-    groupRegex: ".*"  
-EOF
+    groupRegex: ".*" 
 ```
+
+*Question: What Does the `deleteClaim` mean? How it is connected to our previous exercise?*
 
 Please note, you can also export the basic metrics for zookeeper and kafka using `metrics: {}` , but we’ve added some more metrics presented in [strimzi github project](https://github.com/strimzi/strimzi-kafka-operator/blob/master/examples/metrics/kafka-metrics.yaml)
 
-## Step 2
+## Step 2 
 
-Let's take a look on our runing pods in the project:
+Make sure your Kafka cluster was successfully installed and that you can see all of its compnents: 
 
-```bash
-$ oc get pods  
+![](../1-explore-amq-operator/pictures/my-kafka-cluster.png)
 
-amq-streams-cluster-operator-v1.5.0-986f4d669-s286z   1/1     Running   0          18m  
-my-cluster-entity-operator-5fc6c4bf49-hw5mm           3/3     Running   0          78s  
-my-cluster-kafka-0                                    2/2     Running   0          2m2s  
-my-cluster-kafka-1                                    2/2     Running   0          104s  
-my-cluster-kafka-2                                    2/2     Running   0          104s  
-my-cluster-kafka-exporter-75c4c67757-v4zb2            1/1     Running   0          54s  
-my-cluster-zookeeper-0                                1/1     Running   0          2m29s  
-my-cluster-zookeeper-1                                1/1     Running   0          2m29s  
-my-cluster-zookeeper-2                                1/1     Running   0          2m29s
-```
+
+## Step 3 
+
+Veirfy that your Kafka cluster installation had been successful by using the `Project -> Pods` in the inventory: 
+
+![](../1-explore-amq-operator/pictures/get-pods.png)
+
 -   We have our `amq-streams-cluster-oprator` which is the amq-streams operator
 -   We have 3 Kafka pod and 3 Zookeeper pods as stated in `spec.kafka.replicas` and `spec.zookeeper.replicas` accordingly
 -   we also have an entity operator, which comprises of the topic operator and the User operator
 -   Lastly, we have our kafka exporter which exports our cluster metrics as stated in `spec.kafkaExporter` , the operator creates a service to reach this pod
 
-## Step 3 
+## Step 4
 
-**Open the prometheus.yaml file, and edit the namespace according to your project in line 50**
+Ensure that the Kafka nodes are indeed using an persistent volumes for storing the Kafka logDirs by using `Project -> PVCs` on the left tab: 
 
-you can also use sed on CHANGE_ME in order to achieve this (We need Prometheus to access the Kubernetes API, and to do so we should create the needed  Role).
-
-Now, lets run `Prometheus` in our cluster:
-```bash
-$ oc apply -f https://github.com/shonpaz123/amq-streams-workshop/raw/master/6-monitor-amq-system/prometheus.yaml
-```
-
-## Step 4 
-
-Make sure the needed Prometheus resources were created, try to access your Prometheus route.
+![](../1-explore-amq-operator/pictures/persistent-pvcs.png)
 
 ## Step 5 
 
-Create you `Grafana` deployment:
-
-```bash
-oc apply -f https://github.com/shonpaz123/amq-streams-workshop/raw/master/6-monitor-amq-system/grafana.yaml
-```
+Make sure that you have running instances of `Prometheus` and `Grafana` and that both pods are in running state. 
 
 ## Step 6 
 
-TRy and access you `Grafana` route, do you have any data? why? 
+Try and access you `Grafana` route (`user: admin`, `password: 123456`), do you have any data? why? 
 
-## Step 7
+## Step 7 
 
-After we have our monitoring system up and running, we can now create some workload on our `Kafka` cluster, to see if we get the data to our `Grafana` dasboards:
+Let's create a Kafka topic using the `Add+ -> Operator Backed -> Kafka Topic -> Create` with the name `my-topic`: 
 
-```bash
-oc create -f - <<EOF
+![](../1-explore-amq-operator/pictures/create-topic.png)
 
-apiVersion: kafka.strimzi.io/v1beta1
-kind: KafkaTopic
-metadata:
-  name: my-topic
-  labels:
-    strimzi.io/cluster: my-cluster
-spec:
-  partitions: 12
-  replicas: 3
-  config:
-    retention.ms: 7200000
-    segment.bytes: 1073741824
----
-apiVersion: kafka.strimzi.io/v1beta1
-kind: KafkaUser
-metadata:
-  name: my-user
-  labels:
-    strimzi.io/cluster: my-cluster
-spec:
-  authentication:
-    type: tls
-  authorization:
-    type: simple
-    acls:
-      # Example consumer Acls for topic my-topic suing consumer group my-group
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Read
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Describe
-        host: "*"
-      - resource:
-          type: group
-          name: my-group
-          patternType: literal
-        operation: Read
-        host: "*"
-      # Example Producer Acls for topic my-topic
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Write
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Create
-        host: "*"
-      - resource:
-          type: topic
-          name: my-topic
-          patternType: literal
-        operation: Describe
-        host: "*"
----
+
+Make sure you leave the default values and hit the `Create` button. 
+
+## Step 8 
+
+Validate that the created Kafka topic was created successfuly by using `get kt` command: 
+
+```bash 
+$ oc get kt
+                                                                                
+NAME       PARTITIONS   REPLICATION FACTOR
+my-topic   12           3
+```
+
+The Kafka topic was created with 12 parititions and replication factor of 3. 
+
+## Step 9 
+
+Let's create a Kafka user to interact with the created topic, move through the `KafkaUser` CR to verify that you understand how user management is handled in AMQ.
+
+Copy this YAML, and paste it in `Add+ -> Operator Backed -> Kafka User` in order to create the `Kafka User` CR: 
+ 
+
+![](../1-explore-amq-operator/pictures/create-user.png)
+
+Before you hit the `Create` button, switch to the `YAML View` section to verify you understand all the ACLs that is being given to our created user.
+
+## Step 10
+
+Now let's create a Kafka Producer that will write messages to our `my-topic` topic, and a consumer that will consume those messages via `Add+ -> YAML` 
+
+```bash 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -276,12 +230,15 @@ spec:
           - name: TOPIC
             value: my-topic
           - name: DELAY_MS
-            value: "100"
+            value: "5000"
           - name: LOG_LEVEL
             value: "INFO"
           - name: MESSAGE_COUNT
             value: "5000"
----
+```
+Now let's create a Kafka consumer that will read messages from our `my-topic` topic via `Add+ -> YAML` :
+
+```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -326,18 +283,17 @@ spec:
           - name: LOG_LEVEL
             value: "INFO"
           - name: MESSAGE_COUNT
-            value: "1000"
-EOF
+            value: "5000"
 ```
-## Step 8 
+## Step 11 
 
 Verify that you consumer and producer are working as expected, by printing their logs. 
 
-## Step 9 
+## Step 12
 
 Access your `Grafana` dashboards and see if you get the data regarding your `Kafka` cluster's state. 
 
-## Step 10 
+## Step 13 
 
 Play with the number of your consumers and producers to see how the data changes in your dashboards.
 

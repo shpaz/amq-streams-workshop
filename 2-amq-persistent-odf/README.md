@@ -243,7 +243,7 @@ Delete the exercise's resources using:
 *  `Search -> Resources -> Kafka -> Delete`
 
 Make sure you have nothing in the `Topology View`.
-*Note*: PVs will be deleted when the Kafka cluster is destroyed 
+*Question*: Were PVs deleted or not? If not, why? (Try to remember what we talked about for `Volume Reclamation Policies`) 
 
 # Complete
 
