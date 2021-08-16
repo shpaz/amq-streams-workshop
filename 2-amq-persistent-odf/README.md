@@ -16,7 +16,7 @@ Getting to know better with partition allocation and logDirs persistency:
 
 # Diagram
 
-![Red Hat Ansible Automation Lab Diagram](../../../images/network_diagram.png)
+![](https://miro.medium.com/max/1400/1*_PmX-e1oytvjmIk8mqK8Gw.png)
 
 Make sure you connect to the cluster before starting this exercise! 
 
