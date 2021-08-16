@@ -291,11 +291,82 @@ Verify that you consumer and producer are working as expected, by printing their
 
 ## Step 12
 
-Access your `Grafana` dashboards and see if you get the data regarding your `Kafka` cluster's state. 
+Now Let's deploy `Kadrop` which is a simple UI for Kafka clusters. We'll see how we can browse our entire Kafka configuration, Monitor our cluster and even view the meesages landing in our created Topic. 
+
+In order to do so, We'll have to create three components, The first one is the deployment itself for the `Kadrop` pod:
+
+```bash
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: kafdrop
+spec:
+  selector:
+    app: kafdrop
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kafdrop
+    spec:
+      containers:
+        - name: kafdrop
+          image: obsidiandynamics/kafdrop:latest
+          ports:
+            - containerPort: 9000
+          env:
+          - name: KAFKA_BROKERCONNECT
+            value: "my-cluster-kafka-bootstrap:9092"
+          - name: JVM_OPTS
+            value: "-Xms32M -Xmx64M"
+          - name: SERVER_SERVLET_CONTEXTPATH
+            value: "/"
+```
+
+Now that we have the `Pod` running, We'll deploy a `Service` that will help up interact within the cluster itself: 
+
+```bash
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafdrop
+spec:
+  selector:
+    app: kafdrop
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+```
+
+Now, We'll create a `Route` so we could access the `Kadrop` UI outside of the Openshift cluster:
+
+```bash
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: kafrop
+spec:
+  subdomain: ''
+  to:
+    kind: Service
+    name: kafdrop
+    weight: 100
+  port:
+    targetPort: 9000
+  wildcardPolicy: None
+```
 
 ## Step 13 
 
-Play with the number of your consumers and producers to see how the data changes in your dashboards.
+Make sure you can Access the `Kadrop` UI by pressing the arrow on the right when looking at the `Topology` view: 
+
+![](../1-explore-amq-operator/pictures/kadrop.png)
+
+
+## Step 14
+
+Play with the number of your consumers and producers to see how the data changes in your `Kadrop` dashboards.
 
 # Complete
 
