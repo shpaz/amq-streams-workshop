@@ -154,7 +154,7 @@ spec:
           - name: TOPIC
             value: my-topic
           - name: DELAY_MS
-            value: "100"
+            value: "5000"
           - name: LOG_LEVEL
             value: "INFO"
           - name: MESSAGE_COUNT
@@ -207,7 +207,7 @@ spec:
           - name: LOG_LEVEL
             value: "INFO"
           - name: MESSAGE_COUNT
-            value: "1000"
+            value: "5000"
 ```
 
 ## Step 13 
