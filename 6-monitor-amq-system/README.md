@@ -280,6 +280,16 @@ Make sure you can Access the `Kadrop` UI by pressing the arrow on the right when
 
 Play with the number of your consumers and producers to see how the data changes in your `Kadrop` dashboards.
 
+## Step 14
+
+Delete the exercise's resources using:
+*  `Topology -> hello-producer -> Delete Deployment`
+*  `Topology -> hello-consumer -> Delete Deployment`
+*  `Search -> Resources -> KafkaUser -> Delete`
+*  `Search -> Resources -> Kafka -> Delete`
+
+Make sure you have nothing in the `Topology View`.
+
 # Complete
 
 Congratulations! You have completed the second exercise :)
