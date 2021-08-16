@@ -131,7 +131,7 @@ Before you hit the `Create` button, switch to the `YAML View` section to verify 
 
 ## Step 11
 
-Now let's create a Kafka Producer that will write messages to our `my-topic` topic, and a consumer that will consume those messages: 
+Now let's create a Kafka Producer that will write messages to our `my-topic` topic, and a consumer that will consume those messages via `Add+ -> YAML` 
 
 ```bash 
 apiVersion: apps/v1
@@ -179,7 +179,10 @@ spec:
             value: "INFO"
           - name: MESSAGE_COUNT
             value: "5000"
----
+```
+Now let's create a Kafka consumer that will read messages from our `my-topic` topic via `Add+ -> YAML` :
+
+```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
